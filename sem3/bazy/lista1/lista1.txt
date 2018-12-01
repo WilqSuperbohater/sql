@@ -1,0 +1,81 @@
+Bazdy Danych i Systemy Informacyjne
+laboratorium - lista 1
+30 wrzesnia 2018
+
+
+1. Wypisz wszystkie znajdujace siê w bazie tabele.
+
+show tables;
+
+2. Wypisz tytu³y filmów o d³ugoœci wiêkszej ni¿ 120 minut.
+
+select * from film where length > 120;
+
+3. Wypisz  tytu³y  filmów  oraz  ich  jêzyk,  dla  wszystkich  filmów,  w  których  opisie
+wystêpuje s³owo Documentary.
+
+select film.title, language.name
+from film
+      join language on film.language_id = language.language_id
+where description like "%Documentary%";
+
+4. Wypisz tytu³y filmów z kategorii Documentary, które w swoim opisie nie zawie-
+raj¹ s³owa Documentary.
+
+select film.title
+from film
+      join film_category on film.film_id = film_category.film_id
+      join category      on film_category.category_id = category.category_id
+where category.name = "Documentary" AND
+      film.description not like "%Documentary%";
+
+5. Wypisz imiona i nazwiska wszystkich aktorów, którzy wyst¹pili w filmach zawie-
+raj¹cych usuniête sceny.
+
+select distinct actor.first_name, actor.last_name
+from actor
+      join film_actor on actor.actor_id = film_actor.actor_id
+      join film on film_actor.film_id = film.film_id
+where film.special_features like "%Deleted Scenes%"
+order by actor.first_name;
+
+6. Dla ka¿dej kategorii wiekowej filmów (G,PG-13,PG,NC-17,R) wypisz liczbê filmów do niej nale¿¹cych.
+
+select rating, count(*)
+from film
+group by rating;
+
+7. Wypisz tytu³y filmów wypo¿yczonych pomiêdzy 25 a 30 maja 2005. Wyniki posortuj alfabetycznie.
+
+select title
+from film
+      join inventory on film.film_id = inventory.film_id
+      join rental on inventory.inventory_id = rental.inventory_id
+where rental.rental_date > "2005-05-24 23:59:59" AND
+      rental.rental_date < "2005-05-31 00:00:00"
+order by title asc;
+
+7.1
+select film.title, rental.rental_date
+from film
+      join inventory on film.film_id = inventory.film_id
+      join rental on inventory.inventory_id = rental.inventory_id
+where rental.rental_date > "2005-05-24 23:59:59" AND
+      rental.rental_date < "2005-05-31 00:00:00"
+order by rental.rental_date asc;
+
+8. Wypisz tytu³y 5 najd³u¿szych filmów o kategorii R
+
+select title
+from film
+where rating = 'R'
+order by length desc
+limit 5;
+
+9. Wypisz imiona oraz nazwiska wszystkich klientów, którzy byli obs³u¿eni przez 2ró¿nych pracowników. (Uwaga:Nie u¿ywaj grupowania.)
+
+select distinct first_name, last_name
+from customer
+      join rental on customer.custoner_id = rental.customer_id
+where 
+	select count(
