@@ -1,0 +1,11 @@
+ A. FAT16
+ 0. cd /tmp
+ 1. dd if=/dev/zero of=fat16.img bs=1M count=1000 seek=50
+ 2. mkfs.msdos fat16.img
+ 3. mkdir -p /tmp/fs-fat16
+ 4. sudo mount -t msdos fat16.img /tmp/fs-fat16 -o umask=000,loop
+ 5. cd fs-fat16
+ 6. 
+ 
+ B. VFAT
+ 1. 
